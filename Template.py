@@ -1,26 +1,9 @@
 import os
 import cv2
 import numpy as np
-
+from matplotlib import pyplot as plt
 
 def get_train_image(path):
-    '''
-        To get a list of train images, images label, and images index using the given path
-
-            Parameters
-            ----------
-            path : str
-                Location of train root directory
-
-            Returns
-            -------
-            list
-                List containing all train images
-            list
-                List containing all train images label
-            list
-                List containing all train images index
-        '''
     faces_list = []
     labels_list = []
     indexes_list = []
@@ -34,36 +17,10 @@ def get_train_image(path):
 
 
 def get_all_test_folders(path):
-    '''
-        To get a list of test subdirectories using the given path
-
-            Parameters
-            ----------
-            path : str
-                Location of test root directory
-
-            Returns
-            -------
-            list
-                List containing all test subdirectories
-        '''
     return os.listdir(path)
 
 
 def get_all_test_images(path):
-    '''
-        To load a list of test images from given path list. Resize image height to 200 pixels and image width to the corresponding ratio for train images
-
-        Parameters
-        ----------
-        path : str
-            Location of images root directory
-
-        Returns
-        -------
-        list
-            List containing all image that has been resized for each Test Folders
-    '''
     images_list = []
     for image in os.listdir(path):
         image_shape = cv2.imread(path + '/' + image, 0).shape
@@ -73,33 +30,13 @@ def get_all_test_images(path):
 
 
 def detect_faces_and_filter(faces_list, labels_list):
-    '''
-        To detect a face from given image list and filter it if the face on the given image is not equals to one
-
-        Parameters
-        ----------
-        faces_list : list
-            List containing all loaded images
-        labels_list : list
-            List containing all image classes labels
-
-        Returns
-        -------
-        list
-            List containing all filtered and cropped face images in grayscale
-        list
-            list containing image gray face location
-        list
-            List containing all filtered image classes label
-    '''
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     grayed_images_list = []
     grayed_labels_list = []
     grayed_images_path_list = []
     for index, image in enumerate(faces_list):
         # image_shape = image.shape
-        # image = cv2.resize(
-        #     image, (200, int(200 * image_shape[0] / image_shape[1])))
+        # image = cv2.resize(image, (200, int(200 * image_shape[0] / image_shape[1])))
         faces = face_cascade.detectMultiScale(image, 1.3, 5)
         if len(faces) == 1:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -218,7 +155,10 @@ def combine_and_show_result(room, predicted_test_image_list):
             The room number in string format(e.g. 'Room 1')
         predicted_test_image_list: nparray
             Array containing image data
-    '''
+    ''' 
+    plt.xticks([])
+    plt.yticks([])
+    plt.show()
 
 
 '''
