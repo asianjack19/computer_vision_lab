@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
+
 def get_train_image(path):
     faces_list = []
     labels_list = []
@@ -71,29 +72,12 @@ def train(grayed_images_list, grayed_labels_list):
             object
                 Recognizer object after being trained with cropped face images
         '''
-    # To create and train face recognizer object
-
     face_recognizer = cv2.face.LBPHFaceRecognizer_create()
     face_recognizer.train(grayed_images_list, np.array(grayed_labels_list))
     return face_recognizer
 
 
 def predict(recognizer, gray_test_image_list):
-    '''
-        To predict the test image with the recognizer
-
-            Parameters
-            ----------
-            recognizer : object
-                Recognizer object after being trained with cropped face images
-            gray_test_image_list : list
-                List containing all filtered and cropped face images in grayscale
-
-            Returns
-            -------
-            list
-                List containing all prediction results from given test faces
-    '''
     predict_results = []
     for image in gray_test_image_list:
         if image is not None:
@@ -155,10 +139,16 @@ def combine_and_show_result(room, predicted_test_image_list):
             The room number in string format(e.g. 'Room 1')
         predicted_test_image_list: nparray
             Array containing image data
-    ''' 
-    plt.xticks([])
-    plt.yticks([])
-    plt.show()
+    '''
+    horizontal = np.hstack(predicted_test_image_list)
+    cv2.imshow(room, horizontal)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    # ERROR:
+    # only integer scalar arrays can be converted to a scalar index
+    #   NOTE: type of images <class 'numpy.ndarray'>
+    # SOLUTION: convert to array(?) || find another command
+    #   array == ndarray?
 
 
 '''
