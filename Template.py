@@ -10,10 +10,9 @@ def get_train_image(path):
     indexes_list = []
     for index, label in enumerate(os.listdir(path)):
         for image in os.listdir(path + '/' + label):
-            faces_list.append(cv2.imread(path + '/' + label + '/' + image))
+            faces_list.append(cv2.imread(path + '/' + label + '/' + image, 0))
             labels_list.append(label)
             indexes_list.append(index)
-
     return faces_list, labels_list, indexes_list
 
 
@@ -35,15 +34,14 @@ def detect_faces_and_filter(faces_list, labels_list):
     grayed_images_list = []
     grayed_labels_list = []
     grayed_images_path_list = []
+
     for index, image in enumerate(faces_list):
-        # image_shape = image.shape
-        # image = cv2.resize(image, (200, int(200 * image_shape[0] / image_shape[1])))
-        faces = face_cascade.detectMultiScale(image, 1.3, 5)
+        faces = face_cascade.detectMultiScale(image, 1.2, 5)
+
         if len(faces) == 1:
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             for face in faces:
                 x, y, w, h = face
-                grayed_images_list.append(image[y:y + h, x:x + w])
+                grayed_images_list.append(image[y: y+h, x: x+w])
                 grayed_labels_list.append(labels_list[index])
                 grayed_images_path_list.append(faces_list[index])
 
@@ -57,21 +55,6 @@ def detect_faces_and_filter(faces_list, labels_list):
 
 
 def train(grayed_images_list, grayed_labels_list):
-    '''
-        To create and train face recognizer object
-
-            Parameters
-            ----------
-            grayed_images_list : list
-                List containing all filtered and cropped face images in grayscale
-            grayed_labels_list : list
-                List containing all image classes label
-
-            Returns
-            -------
-            object
-                Recognizer object after being trained with cropped face images
-        '''
     face_recognizer = cv2.face.LBPHFaceRecognizer_create()
     face_recognizer.train(grayed_images_list, np.array(grayed_labels_list))
     return face_recognizer
@@ -82,6 +65,7 @@ def predict(recognizer, gray_test_image_list):
     for image in gray_test_image_list:
         if image is not None:
             predict_result = recognizer.predict(image)
+            # predict_result, confidence = recognizer.predict(image)
             predict_results.append(predict_result)
     return predict_results
 
@@ -183,10 +167,12 @@ def main():
         End of modifiable
         -------------------
     '''
+
     faces_list, labels_list, indexes_list = get_train_image(train_path)
     grayed_trained_images_list, _, grayed_trained_labels_list = detect_faces_and_filter(
         faces_list, indexes_list)
     recognizer = train(grayed_trained_images_list, grayed_trained_labels_list)
+
     '''
         Please modify test_path value according to the location of
         your data train root directory
