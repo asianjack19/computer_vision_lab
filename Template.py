@@ -29,7 +29,7 @@ def get_all_test_images(path):
     return images_list
 
 
-def detect_faces_and_filter(faces_list, labels_list):
+def detect_faces_and_filter(faces_list, labels_list=None):
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     grayed_images_list = []
     grayed_labels_list = []
@@ -45,13 +45,7 @@ def detect_faces_and_filter(faces_list, labels_list):
                 grayed_labels_list.append(labels_list[index])
                 grayed_images_path_list.append(faces_list[index])
 
-    # for index, image in enumerate(grayed_images_path_list):
-    #     print(image)
-    # for index, image in enumerate(grayed_images_list):
-    #     cv2.imshow('image', image)
-    #     cv2.waitKey(0)
-    #     cv2.destroyAllWindows()
-    # return grayed_images_list, faces, grayed_labels_list
+    return grayed_images_list, grayed_images_path_list, grayed_labels_list
 
 
 def train(grayed_images_list, grayed_labels_list):
@@ -64,9 +58,12 @@ def predict(recognizer, gray_test_image_list):
     predict_results = []
     for image in gray_test_image_list:
         if image is not None:
-            predict_result = recognizer.predict(image)
-            # predict_result, confidence = recognizer.predict(image)
+            predict_result, confidence = recognizer.predict(image)
             predict_results.append(predict_result)
+            text = image[predict_result] + ': ' + str(confidence)
+            cv2.putText(image, text, (x, y-10),
+                        cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+            cv2.imshow('Result', image)
     return predict_results
 
 
@@ -111,6 +108,10 @@ def write_prediction(predict_results, test_image_list, test_faces_rects, train_n
             List containing all test images after being drawn with
             its prediction and validation results
     '''
+    predicted_test_image_list = []
+    for i in range(len(predict_results)):
+        ###
+    return predicted_test_image_list
 
 
 def combine_and_show_result(room, predicted_test_image_list):
@@ -124,15 +125,14 @@ def combine_and_show_result(room, predicted_test_image_list):
         predicted_test_image_list: nparray
             Array containing image data
     '''
-    horizontal = np.hstack(predicted_test_image_list)
-    cv2.imshow(room, horizontal)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    # ERROR:
-    # only integer scalar arrays can be converted to a scalar index
-    #   NOTE: type of images <class 'numpy.ndarray'>
-    # SOLUTION: convert to array(?) || find another command
-    #   array == ndarray?
+    for i in enumerate(predicted_test_image_list):
+
+    combined = predicted_test_image_list
+    # HOW?
+    for i in room:
+        cv2.imshow(i, combined)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
 '''
@@ -187,14 +187,14 @@ def main():
         End of modifiable
         -------------------
     '''
+
     test_images_folder = get_all_test_folders(test_path)
+
     for index, room in enumerate(test_images_folder):
         test_images_list = get_all_test_images(test_path + '/' + room)
         grayed_test_image_list, grayed_test_location, _ = detect_faces_and_filter(
             test_images_list)
         predict_results = predict(recognizer, grayed_test_image_list)
-        for index, predict_result in enumerate(predict_results):
-            print(predict_result)
         predicted_test_image_list = write_prediction(
             predict_results, test_images_list, grayed_test_location, labels_list, index+1)
         combine_and_show_result(room, predicted_test_image_list)
