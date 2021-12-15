@@ -67,7 +67,7 @@ def predict(recognizer, gray_test_image_list):
     return predict_results
 
 
-def check_attandee(predicted_name, room_number):
+def check_attendee(predicted_name, room_number):
     '''
         To check the predicted user is in the designated room or not
 
@@ -115,29 +115,16 @@ def write_prediction(predict_results, test_image_list, test_faces_rects, train_n
 
 
 def combine_and_show_result(room, predicted_test_image_list):
-    '''
-        To show the final image that already combine into one image
-
-        Parameters
-        ----------
-        room: str
-            The room number in string format(e.g. 'Room 1')
-        predicted_test_image_list: nparray
-            Array containing image data
-    '''
-    for i in enumerate(predicted_test_image_list):
-
-    combined = predicted_test_image_list
-    # HOW?
-    for i in room:
-        cv2.imshow(i, combined)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    plt.figure(room)
+    for idx, i in enumerate(predicted_test_image_list):
+        plt.subplot(1, len(predicted_test_image_list), idx+1)
+        plt.imshow(predicted_test_image_list[idx])
+        plt.axis('off')
+    plt.subplots_adjust(wspace=0, hspace=0, left=0, right=1, bottom=0, top=1)
+    plt.show()
 
 
 '''
-
-
 You may modify the code below if it's marked between
 
 -------------------

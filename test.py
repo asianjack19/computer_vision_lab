@@ -44,52 +44,27 @@ predicted_test_image_list = []
 predicted_test_image_list.append(cv2.imread('Dataset/Train/Elon Musk/1.jpg'))
 predicted_test_image_list.append(cv2.imread('Dataset/Train/Elon Musk/2.jpg'))
 predicted_test_image_list.append(cv2.imread('Dataset/Train/Elon Musk/3.jpg'))
+predicted_test_image_list.append(cv2.imread('Dataset/Train/Elon Musk/4.jpg'))
 
-# imshow image list
-# for i in range(len(predicted_test_image_list)):
-#     predicted_test_image_list[i] = cv2.resize(
-#         predicted_test_image_list[i], (0, 0), None, 0.5, 0.5)
-#     cv2.imshow(str(i), predicted_test_image_list[i])
-#     cv2.waitKey(0)
-#     cv2.destroyAllWindows()
+# plt.figure('Room Elon')
+# plt.subplot(1, 4, 1)
+# plt.imshow(predicted_test_image_list[0])
+# plt.axis('off')
+# plt.subplot(1, 4, 2)
+# plt.imshow(predicted_test_image_list[1])
+# plt.axis('off')
+# plt.subplot(1, 4, 3)
+# plt.imshow(predicted_test_image_list[2])
+# plt.axis('off')
+# plt.subplot(1, 4, 4)
+# plt.imshow(predicted_test_image_list[3])
+# plt.axis('off')
+# plt.show()
 
-scale_percent = 50/100
-# for i in range(len(predicted_test_image_list)):
-#     width = int(predicted_test_image_list[i].shape[1] * scale_percent)
-#     height = int(predicted_test_image_list[i].shape[0] * scale_percent)
-#     dim = (width, height)
-#     predicted_test_image_list[i] = cv2.resize(
-#         predicted_test_image_list[i], dim, cv2.INTER_AREA)
-#     cv2.imshow(str(i), predicted_test_image_list[i])
-#     cv2.waitKey(0)
-#     cv2.destroyAllWindows()
-
-for i in range(len(predicted_test_image_list)):
-    predicted_test_image_list[i] = np.array(predicted_test_image_list[i])
-    print(type(predicted_test_image_list[i]))
-    # predicted_test_image_list[i] = predicted_test_image_list[i].resize(
-    #     (900, 900))
-    # cv2.imshow(str(i), predicted_test_image_list[i])
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
-# combine_and_show_result("Room 1", predicted_test_image_list)
-'''
-    To show the final image that already combine into one image
-
-    Parameters
-    ----------
-    room: str
-        The room number in string format(e.g. 'Room 1')
-    predicted_test_image_list: nparray
-        Array containing image data
-'''
-horizontal = np.hstack(
-    (predicted_test_image_list[0], predicted_test_image_list[1]))
-cv2.imshow("Room 1", horizontal)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-arr = np.array([1, 2, 3, 4, 5, 6])
-hor = np.hstack(arr)
-print(hor)
+plt.figure('Room Elon')
+for idx, i in enumerate(predicted_test_image_list):
+    plt.subplot(1, len(predicted_test_image_list), idx+1)
+    plt.imshow(predicted_test_image_list[idx])
+    plt.axis('off')
+plt.subplots_adjust(wspace=0, hspace=0, left=0, right=1, bottom=0, top=1)
+plt.show()
