@@ -116,13 +116,19 @@ def write_prediction(predict_results, test_image_list, test_faces_rects, train_n
 
 
 def combine_and_show_result(room, predicted_test_image_list):
-    plt.figure(room)
-    for idx, i in enumerate(predicted_test_image_list):
-        plt.subplot(1, len(predicted_test_image_list), idx+1)
-        plt.imshow(predicted_test_image_list[idx])
-        plt.axis('off')
-    plt.subplots_adjust(wspace=0, hspace=0, left=0, right=1, bottom=0, top=1)
-    plt.show()
+    h_min = min(img.shape[0] for img in predicted_test_image_list)
+    h_min = int(h_min * 80/100)  # scale
+
+    # resize & combine
+    resized_image_list = [cv2.resize(img,
+                                     (int(img.shape[1] * h_min / img.shape[0]),
+                                      h_min), interpolation=cv2.INTER_CUBIC)
+                          for img in predicted_test_image_list]
+
+    # show result
+    cv2.imshow(room, resized_image_list)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 '''
