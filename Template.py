@@ -58,6 +58,7 @@ def predict(recognizer, gray_test_image_list):
     predict_results = []
     for image in gray_test_image_list:
         if image is not None:
+            x, y, w, h = image  # ?
             predict_result, confidence = recognizer.predict(image)
             predict_results.append(predict_result)
             text = image[predict_result] + ': ' + str(confidence)
@@ -110,7 +111,7 @@ def write_prediction(predict_results, test_image_list, test_faces_rects, train_n
     '''
     predicted_test_image_list = []
     for i in range(len(predict_results)):
-        ###
+        ''''''
     return predicted_test_image_list
 
 
