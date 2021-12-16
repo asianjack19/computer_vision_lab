@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 def get_train_image(path):
@@ -36,11 +35,11 @@ def detect_faces_and_filter(faces_list, labels_list=None):
     grayed_images_path_list = []
 
     for index, image in enumerate(faces_list):
-        faces = face_cascade.detectMultiScale(image, 1.2, 5)
+        detected_face = face_cascade.detectMultiScale(image, 1.2, 5)
 
-        if len(faces) == 1:
-            for face in faces:
-                x, y, w, h = face
+        if len(detected_face) == 1:
+            for face_rect in detected_face:
+                x, y, w, h = face_rect
                 grayed_images_list.append(image[y: y+h, x: x+w])
                 grayed_labels_list.append(labels_list[index])
                 grayed_images_path_list.append(faces_list[index])
@@ -55,35 +54,34 @@ def train(grayed_images_list, grayed_labels_list):
 
 
 def predict(recognizer, gray_test_image_list):
-    predict_results = []
+    predict_results = []  # room_images = []
+
     for image in gray_test_image_list:
         if image is not None:
-            x, y, w, h = image  # ?
-            predict_result, confidence = recognizer.predict(image)
+            predict_result, _ = recognizer.predict(image)
             predict_results.append(predict_result)
-            text = image[predict_result] + ': ' + str(confidence)
+            check_attendee(predict_result)
+            text =
             cv2.putText(image, text, (x, y-10),
                         cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
             cv2.imshow('Result', image)
+
     return predict_results
 
 
 def check_attendee(predicted_name, room_number):
-    '''
-        To check the predicted user is in the designated room or not
 
-        Parameters
-        ----------
-        predicted_name: str
-            The name result from predicted user
-        room_number: int
-            The room number that the predicted user entered
-
-        Returns
-        -------
-        bool
-            If predicted user entered the correct room return True otherwise False
-    '''
+    # NOTE: passing ke sini predicted_name[res], (array)
+    if room_number == 'Room 1':
+        if predicted_name != 'Elon Musk' and predicted_name != 'Steve Jobs' and predicted_name != 'Benedict Cumberbatch' and predicted_name != 'Donald Trump':
+            return False
+        else:
+            return True
+    elif room_number == 'Room 2':
+        if predicted_name != 'IU' and predicted_name != 'Kim Se Jeong' and predicted_name != 'Kim Seon Ho' and predicted_name != 'Rich Brian':
+            return False
+        else:
+            return True
 
 
 def write_prediction(predict_results, test_image_list, test_faces_rects, train_names, room):
@@ -109,9 +107,13 @@ def write_prediction(predict_results, test_image_list, test_faces_rects, train_n
             List containing all test images after being drawn with
             its prediction and validation results
     '''
+    # NOTE: face_rects are created here
+    # NOTE: predicted_test_image_list = room_images in my other code
     predicted_test_image_list = []
-    for i in range(len(predict_results)):
-        ''''''
+
+    for i in range(len(test_image_list)):
+        img_gray = cv2.imread()
+
     return predicted_test_image_list
 
 
