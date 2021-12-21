@@ -54,30 +54,21 @@ def train(grayed_images_list, grayed_labels_list):
 
 
 def predict(recognizer, gray_test_image_list):
-    predict_results = []  # room_images = []
-
+    predict_results = []
     for image in gray_test_image_list:
         if image is not None:
             predict_result, _ = recognizer.predict(image)
             predict_results.append(predict_result)
-            check_attendee(predict_result)
-            text =
-            cv2.putText(image, text, (x, y-10),
-                        cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
-            cv2.imshow('Result', image)
-
     return predict_results
 
 
 def check_attendee(predicted_name, room_number):
-
-    # NOTE: passing ke sini predicted_name[res], (array)
-    if room_number == 'Room 1':
+    if room_number == 1:
         if predicted_name != 'Elon Musk' and predicted_name != 'Steve Jobs' and predicted_name != 'Benedict Cumberbatch' and predicted_name != 'Donald Trump':
             return False
         else:
             return True
-    elif room_number == 'Room 2':
+    elif room_number == 2:
         if predicted_name != 'IU' and predicted_name != 'Kim Se Jeong' and predicted_name != 'Kim Seon Ho' and predicted_name != 'Rich Brian':
             return False
         else:
@@ -107,27 +98,17 @@ def write_prediction(predict_results, test_image_list, test_faces_rects, train_n
             List containing all test images after being drawn with
             its prediction and validation results
     '''
-    # NOTE: face_rects are created here
-    # NOTE: predicted_test_image_list = room_images in my other code
     predicted_test_image_list = []
-
-    for i in range(len(test_image_list)):
-        img_gray = cv2.imread()
-
     return predicted_test_image_list
 
 
 def combine_and_show_result(room, predicted_test_image_list):
     h_min = min(img.shape[0] for img in predicted_test_image_list)
-    h_min = int(h_min * 80/100)  # scale
-
-    # resize & combine
+    h_min = int(h_min * 80/100)
     resized_image_list = [cv2.resize(img,
                                      (int(img.shape[1] * h_min / img.shape[0]),
                                       h_min), interpolation=cv2.INTER_CUBIC)
                           for img in predicted_test_image_list]
-
-    # show result
     cv2.imshow(room, resized_image_list)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
